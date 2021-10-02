@@ -13,13 +13,13 @@ public class finalMain {
         FinData finData; // = new FinData();
         Scanner scanner = new Scanner(System.in);
         //User is asked what he wants to do
-        System.out.println("Read data (1) enter data (2): ");
+        System.out.println("Do you want to Read data (type (1)) or enter data (type (2)): ");
         int choice = scanner.nextInt();
 
         //Enter household name
         finData = new FinData();
         System.out.println("Enter household name: ");
-        finData.familyName = scanner.next(); //.nextLine();
+        finData.familyName = scanner.next().trim(); //.nextLine();
 
         if (choice == 1) {
             //read data
@@ -41,7 +41,7 @@ public class finalMain {
             finData.dreamSum = scanner.nextFloat();
             // break;
         }
-        System.out.println("You have to save up " + finData.dreamSum + " Euro. Enter your monthly income: ");
+        System.out.println("You want to save up " + finData.dreamSum + " Euro. Enter your monthly income: ");
       //  float income = scanner.nextFloat();
             finData.income = scanner.nextFloat();
 
@@ -53,7 +53,7 @@ public class finalMain {
             finData.billsTotal = 0;
         finData.percent = 0;
         String[] questions = new String[]{
-                "How much do you pay monthly for communal utilities (gas, water, electricity?)",
+                "How much do you pay monthly for utilities (rent, gas, water, electricity)?",
                 "How much do you pay monthly for food?",
                 "What is your monthly expenses for clothing?",
                 "What is your monthly expenses on children?",
@@ -69,7 +69,7 @@ public class finalMain {
                 finData.billsAnswer = scanner.nextFloat();
                 finData.billsTotal = finData.billsTotal + finData.billsAnswer;
             }
-            System.out.printf("Total expenses sum for %s in a month: " + finData.billsTotal + " Euros. ", finData.familyName);
+            System.out.printf("Total expenses sum for %s in a month: %.2f Euros. ", finData.familyName, finData.billsTotal );
 
             System.out.println("Enter how your expenses can change in % per month? ");
             finData.percent = scanner.nextInt();
@@ -206,7 +206,7 @@ public class finalMain {
 
             System.out.println(String.format(output, finData.dreamSum, finData.resultMax, finData.resultOpt, finData.resultMin));
         } else {
-            System.out.println("Sorry we have not data about you");
+            System.out.println("Sorry, we have no data about you");
         }
         return finData;
     }
