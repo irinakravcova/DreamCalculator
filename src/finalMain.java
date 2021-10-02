@@ -162,11 +162,9 @@ public class finalMain {
             System.out.println("Something went wrong");
         }
     }
-
 //“A ceil function converts a decimal number to the immediate largest integer.”
 // If the number passed is already a whole number or an integer, then the same number is the ceiling value.
 // However, if you pass a null value to the ceil function in mathematics you get a “zero”
-
 //    private static void reportMonthsToDream(float dreamSum, float moneyLeft) {
 //        int monthsToDream = (int) (0.5 + Math.ceil(dreamSum / moneyLeft));
     private static void reportMonthsToDream(int result) {
@@ -178,9 +176,10 @@ public class finalMain {
         } else if (monthsToDream > 12 && monthsToDream % 12 != 0) {
             System.out.println("Your dream will come true in " + monthsToReadable(monthsToDream));
         } else {
-            System.out.println("Your dream will come true in " + monthsToDream / 12 + "years");
+            System.out.println("Your dream will come true in " + monthsToDream / 12 + " year(s)");
         }
     }
+
     public static FinData readData(Connection conn, String familyName) throws SQLException {
 
         FinData finData = new FinData();
@@ -198,14 +197,14 @@ public class finalMain {
             finData.income = resultSet.getFloat("income");
             finData.billsTotal = resultSet.getFloat("billsTotal");
             finData.percent = resultSet.getFloat("percent");
-            finData.resultOpt = resultSet.getInt("Result1");
-            finData.resultMax = resultSet.getInt("Result2");
+            finData.resultMax = resultSet.getInt("Result1");
+            finData.resultOpt = resultSet.getInt("Result2");
             finData.resultMin = resultSet.getInt("Result3");
 
             String output = "Your dreamSum is: %.2f \n\t Time for the Dream (month(s)): \n\t Result1: %d \n\t result2: %d " +
                     "\n\t Result3: %d \n\t ";
 
-            System.out.println(String.format(output, finData.dreamSum, finData.resultMax,finData.resultOpt, finData.resultMin));
+            System.out.println(String.format(output, finData.dreamSum, finData.resultMax, finData.resultOpt, finData.resultMin));
         } else {
             System.out.println("Sorry we have not data about you");
         }
