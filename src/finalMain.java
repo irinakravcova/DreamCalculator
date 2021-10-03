@@ -13,7 +13,8 @@ public class finalMain {
         FinData finData; // = new FinData();
         Scanner scanner = new Scanner(System.in);
         //User is asked what he wants to do
-        System.out.println("Do you want to Read data (type (1)) or enter data (type (2)): ");
+        System.out.println("Welcome to DreamCalculator!");
+        System.out.println("Do you want to Read data (1) or Enter data (2): ");
         int choice = scanner.nextInt();
 
         //Enter household name
@@ -83,23 +84,26 @@ public class finalMain {
         float moneyLeftMax = finData.income - finData.billsTotal + variablePart;
         float moneyLeftMin = finData.income - finData.billsTotal - variablePart;
 
-        System.out.println("Money left in a month, in Euros: \n Best option: " + moneyLeftMax + "\n Optimal option: " + moneyLeft + "\n Worst option: " + moneyLeftMin);
+  //      System.out.println("Money left in a month, in Euros: \n Best option: " + moneyLeftMax + "\n Optimal option: " + moneyLeft + "\n Worst option: " + moneyLeftMin);
       //  scanner.nextLine();
 
-            if (moneyLeftMax<0) {
+            if (moneyLeftMax<=0) {
             System.out.println("In the best option: Your expenses exceed your income. Your dream is unreachable. ");
-        }
+            float resultMax = 0;
+            }
+
         finData.resultMax = (int) Math.ceil(finData.dreamSum / moneyLeftMax);
 
-
-            if(moneyLeft<0){
+            if(moneyLeft<=0){
             System.out.println("In the optimal option: Your expenses exceed your income. Your dream is unreachable. ");
+            float resultOpt = 0;;
         }
             finData.resultOpt = (int) Math.ceil(finData.dreamSum / moneyLeft);
 
 
-            if(moneyLeftMin<0){
+            if(moneyLeftMin<=0){
             System.out.println("In the worst scenario: Your expenses exceed your income. Your dream is unreachable. ");
+            float resultMin =0;
         }
         finData.resultMin = (int) Math.ceil(finData.dreamSum / moneyLeftMin);
 
@@ -151,8 +155,8 @@ public class finalMain {
         preparedStatement.setFloat(3, finData.income);
         preparedStatement.setFloat(4, finData.billsTotal);
         preparedStatement.setFloat(5, finData.percent);
-        preparedStatement.setInt(6, finData.resultMax);
-        preparedStatement.setInt(7, finData.resultOpt);
+        preparedStatement.setInt(7, finData.resultMax);
+        preparedStatement.setInt(6, finData.resultOpt);
         preparedStatement.setInt(8, finData.resultMin);
         int rowInserted = preparedStatement.executeUpdate();
 
@@ -171,12 +175,14 @@ public class finalMain {
         int monthsToDream = result; //(int) (0.5 + Math.ceil(finData.dreamSum / finData.moneyLeft));
 
 // depending on the amount of months, the output will be following:
-        if (monthsToDream < 12) {
+        if (monthsToDream < 12 && monthsToDream >= 0) {
             System.out.println("Your dream will come true in " + monthsToDream + " months");
         } else if (monthsToDream > 12 && monthsToDream % 12 != 0) {
             System.out.println("Your dream will come true in " + monthsToReadable(monthsToDream));
-        } else {
+        } else if (monthsToDream % 12 == 0){
             System.out.println("Your dream will come true in " + monthsToDream / 12 + " year(s)");
+        } else {
+            System.out.println("test strada");
         }
     }
 
