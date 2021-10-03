@@ -40,72 +40,76 @@ public class finalMain {
             finData.billsTotal = 0.0f;
             finData.percent = 0.0f;
 
-        //IF dreamSum is too small, the app asks for re-enter the sum as long as it will be more than 100
-        while (finData.dreamSum < 100) {
-            System.out.println("sum is too small. Try again.\n Enter how big is your dream in euros? ");
-            finData.dreamSum = scanner.nextFloat();
-            // break;
-        }
+            //IF dreamSum is too small, the app asks for re-enter the sum as long as it will be more than 100
+            while (finData.dreamSum < 100) {
+                System.out.println("sum is too small. Try again.\n Enter how big is your dream in euros? ");
+                finData.dreamSum = scanner.nextFloat();
+                // break;
+            }
 
 
-        System.out.println("You want to save up " + finData.dreamSum + " Euro. Enter your monthly income: ");
+            System.out.println("You want to save up " + finData.dreamSum + " Euro. Enter your monthly income: ");
             finData.income = scanner.nextFloat();
 
-        System.out.println("So, your monthly earning is " + finData.income + " Euros. Do you have any expenses every month? y/n");
-        scanner.nextLine();
-        char answer = scanner.nextLine().charAt(0);
+            System.out.println("So, your monthly earning is " + finData.income + " Euros. Do you have any expenses every month? y/n");
+            scanner.nextLine();
+            char answer = scanner.nextLine().charAt(0);
 
-        //Array with the elements - questions inside
+            //Array with the elements - questions inside
             //Depending on user answer we create two IFs: yes part includes for-loop to sum all the elements,
             //no -user enters "no", the app goes further to the calculations
-        finData.billsTotal = 0;
-        finData.percent = 0;
-        String[] questions = new String[]{
-                "How much do you pay monthly for utilities (rent, gas, water, electricity)?",
-                "How much do you pay monthly for food?",
-                "What is your monthly expenses for clothing?",
-                "What is your monthly expenses on children?",
-                "How much is for any other expenses in a month?"};
+            finData.billsTotal = 0;
+            finData.percent = 0;
+            String[] questions = new String[]{
+                    "How much do you pay monthly for utilities (rent, gas, water, electricity)?",
+                    "How much do you pay monthly for food?",
+                    "What is your monthly expenses for clothing?",
+                    "What is your monthly expenses on children?",
+                    "How much is for any other expenses in a month?"};
 
-        if (answer == 'y') {
-            System.out.println("Enter your monthly expenses one by one (in euros). Type (0) if not applicable. ");
-            //    System.out.println();
+            if (answer == 'y') {
+                System.out.println("Enter your monthly expenses one by one (in euros). Type (0) if not applicable. ");
+                //    System.out.println();
 
-            for (int i = 0; i < questions.length; i++) {
-                String question = questions[i];
-                System.out.println(question);
-                finData.billsAnswer = scanner.nextFloat();
-                finData.billsTotal = finData.billsTotal + finData.billsAnswer;
+                for (int i = 0; i < questions.length; i++) {
+                    String question = questions[i];
+                    System.out.println(question);
+                    finData.billsAnswer = scanner.nextFloat();
+                    finData.billsTotal = finData.billsTotal + finData.billsAnswer;
+                }
+                System.out.printf("Total expenses sum for %s in a month: %.2f Euros. ", finData.familyName, finData.billsTotal);
+
+                System.out.println("Enter how your expenses can change in % per month? ");
+                finData.percent = scanner.nextInt();
+
+            } else if (answer == 'n') {
+                //   if the user enters "no", the app goes further to the calculations
             }
-            System.out.printf("Total expenses sum for %s in a month: %.2f Euros. ", finData.familyName, finData.billsTotal );
+            //Variables to calculate the difference between income and expenditure and changing %
+            float variablePart = finData.billsTotal * finData.percent / 100;
+            float moneyLeft = finData.income - finData.billsTotal;
+            float moneyLeftMax = finData.income - finData.billsTotal + variablePart;
+            float moneyLeftMin = finData.income - finData.billsTotal - variablePart;
 
-            System.out.println("Enter how your expenses can change in % per month? ");
-            finData.percent = scanner.nextInt();
+            //BEST, OPTIMAL and WORST options, system print out
+            if (moneyLeftMax <= 0) {
+                System.out.println("In the best option: Your expenses exceed your income. Your dream is unreachable. ");
+                float resultMax = 0;
+            }
+            finData.resultMax = (int) Math.ceil(finData.dreamSum / moneyLeftMax);
 
-        }else if (answer == 'n'){
-         //   if the user enters "no", the app goes further to the calculations
-        }
-        //Variables to calculate the difference between income and expenditure and changing %
-        float variablePart = finData.billsTotal * finData.percent/100;
-        float moneyLeft = finData.income - finData.billsTotal;
-        float moneyLeftMax = finData.income - finData.billsTotal + variablePart;
-        float moneyLeftMin = finData.income - finData.billsTotal - variablePart;
+            if (moneyLeft <= 0) {
+                System.out.println("In the optimal option: Your expenses exceed your income. Your dream is unreachable. ");
+                float resultOpt = 0;
+                ;
+            }
+            finData.resultOpt = (int) Math.ceil(finData.dreamSum / moneyLeft);
 
-        //BEST, OPTIMAL and WORST options, system print out
-            if (moneyLeftMax<=0) {
-            System.out.println("In the best option: Your expenses exceed your income. Your dream is unreachable. ");
-            float resultMax = 0;
-            }finData.resultMax = (int) Math.ceil(finData.dreamSum / moneyLeftMax);
-
-            if(moneyLeft<=0){
-            System.out.println("In the optimal option: Your expenses exceed your income. Your dream is unreachable. ");
-            float resultOpt = 0;;
-            }finData.resultOpt = (int) Math.ceil(finData.dreamSum / moneyLeft);
-
-            if(moneyLeftMin<=0){
-            System.out.println("In the worst scenario: Your expenses exceed your income. Your dream is unreachable. ");
-            float resultMin =0;
-            }finData.resultMin = (int) Math.ceil(finData.dreamSum / moneyLeftMin);
+            if (moneyLeftMin <= 0) {
+                System.out.println("In the worst scenario: Your expenses exceed your income. Your dream is unreachable. ");
+                float resultMin = 0;
+            }
+            finData.resultMin = (int) Math.ceil(finData.dreamSum / moneyLeftMin);
 
 
             //if everything was correct then the app inserts user to the database
@@ -132,6 +136,7 @@ public class finalMain {
         System.out.println("In the worst scenario: ");
         reportMonthsToDream(finData.resultMin);
     }
+
     // Method to calculate year un month
     public static String monthsToReadable(int monthsTotal) {
         int years = monthsTotal / 12;
@@ -166,7 +171,8 @@ public class finalMain {
             System.out.println("Something went wrong");
         }
     }
-//“A ceil function converts a decimal number to the immediate largest integer.”
+
+    //“A ceil function converts a decimal number to the immediate largest integer.”
 // If the number passed is already a whole number or an integer, then the same number is the ceiling value.
 // However, if you pass a null value to the ceil function in mathematics you get a “zero”
 //    private static void reportMonthsToDream(float dreamSum, float moneyLeft) {
@@ -179,7 +185,7 @@ public class finalMain {
             System.out.println("Your dream will come true in " + monthsToDream + " months");
         } else if (monthsToDream > 12 && monthsToDream % 12 != 0) {
             System.out.println("Your dream will come true in " + monthsToReadable(monthsToDream));
-        } else if (monthsToDream % 12 == 0){
+        } else if (monthsToDream % 12 == 0) {
             System.out.println("Your dream will come true in " + monthsToDream / 12 + " year(s)");
         } else {
             System.out.println();
