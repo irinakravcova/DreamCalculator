@@ -6,23 +6,26 @@ import java.awt.geom.Arc2D;
 
 public class finalMain {
     public static void main(String[] args) {
+        //connecting to SQL database
         String dbURL = "jdbc:mysql://localhost:3306/java24";
         String user = "root";
         String password = "1234MySQL";
 
-        FinData finData; // = new FinData();
+        FinData finData;
         Scanner scanner = new Scanner(System.in);
+
         //User is asked what he wants to do
         System.out.println("Welcome to DreamCalculator!");
-        System.out.println("Do you want to Read data (1) or Enter data (2): ");
+        System.out.println("Do you want to Enter data (1) or Read data (2) : ");
         int choice = scanner.nextInt();
 
         //Enter household name
         finData = new FinData();
         System.out.println("Enter household name: ");
-        finData.familyName = scanner.next().trim(); //.nextLine();
+        finData.familyName = scanner.next().trim().toLowerCase();
 
-        if (choice == 1) {
+        //READ or ENTER data
+        if (choice == 2) {
             //read data
             try (Connection conn = DriverManager.getConnection(dbURL, user, password)) {
                 System.out.println("read DB");
@@ -37,21 +40,25 @@ public class finalMain {
             finData.billsTotal = 0.0f;
             finData.percent = 0.0f;
 
+        //IF dreamSum is too small, the app asks for re-enter the sum as long as it will be more than 100
         while (finData.dreamSum < 100) {
             System.out.println("sum is too small. Try again.\n Enter how big is your dream in euros? ");
             finData.dreamSum = scanner.nextFloat();
             // break;
         }
+
+
         System.out.println("You want to save up " + finData.dreamSum + " Euro. Enter your monthly income: ");
-      //  float income = scanner.nextFloat();
             finData.income = scanner.nextFloat();
 
         System.out.println("So, your monthly earning is " + finData.income + " Euros. Do you have any expenses every month? y/n");
         scanner.nextLine();
         char answer = scanner.nextLine().charAt(0);
 
-       // float billsTotal = 0;
-            finData.billsTotal = 0;
+        //Array with the elements - questions inside
+            //Depending on user answer we create two IFs: yes part includes for-loop to sum all the elements,
+            //no -user enters "no", the app goes further to the calculations
+        finData.billsTotal = 0;
         finData.percent = 0;
         String[] questions = new String[]{
                 "How much do you pay monthly for utilities (rent, gas, water, electricity)?",
@@ -76,52 +83,44 @@ public class finalMain {
             finData.percent = scanner.nextInt();
 
         }else if (answer == 'n'){
-         //   System.out.println("");
+         //   if the user enters "no", the app goes further to the calculations
         }
-
+        //Variables to calculate the difference between income and expenditure and changing %
         float variablePart = finData.billsTotal * finData.percent/100;
         float moneyLeft = finData.income - finData.billsTotal;
         float moneyLeftMax = finData.income - finData.billsTotal + variablePart;
         float moneyLeftMin = finData.income - finData.billsTotal - variablePart;
 
-  //      System.out.println("Money left in a month, in Euros: \n Best option: " + moneyLeftMax + "\n Optimal option: " + moneyLeft + "\n Worst option: " + moneyLeftMin);
-      //  scanner.nextLine();
-
+        //BEST, OPTIMAL and WORST options, system print out
             if (moneyLeftMax<=0) {
             System.out.println("In the best option: Your expenses exceed your income. Your dream is unreachable. ");
             float resultMax = 0;
-            }
-
-        finData.resultMax = (int) Math.ceil(finData.dreamSum / moneyLeftMax);
+            }finData.resultMax = (int) Math.ceil(finData.dreamSum / moneyLeftMax);
 
             if(moneyLeft<=0){
             System.out.println("In the optimal option: Your expenses exceed your income. Your dream is unreachable. ");
             float resultOpt = 0;;
-        }
-            finData.resultOpt = (int) Math.ceil(finData.dreamSum / moneyLeft);
-
+            }finData.resultOpt = (int) Math.ceil(finData.dreamSum / moneyLeft);
 
             if(moneyLeftMin<=0){
             System.out.println("In the worst scenario: Your expenses exceed your income. Your dream is unreachable. ");
             float resultMin =0;
-        }
-        finData.resultMin = (int) Math.ceil(finData.dreamSum / moneyLeftMin);
+            }finData.resultMin = (int) Math.ceil(finData.dreamSum / moneyLeftMin);
 
+
+            //if everything was correct then the app inserts user to the database
             try (Connection conn = DriverManager.getConnection(dbURL, user, password)) {
                 System.out.println("insert DB");
                 insertData(conn, finData);
 
             } catch (SQLException e) {
                 System.out.println("Err " + e);
-
             }
         }
-        //finData show on the screen
+        //finData showed on the screen when the user READS data
 
         System.out.println("Result: ");
-
         String output = "%s, Your dreamSum is: %.2f";
-
         System.out.println(String.format(output, finData.familyName, finData.dreamSum));
 
         System.out.println("In the best option: ");
@@ -133,13 +132,14 @@ public class finalMain {
         System.out.println("In the worst scenario: ");
         reportMonthsToDream(finData.resultMin);
     }
-    // year un month
+    // Method to calculate year un month
     public static String monthsToReadable(int monthsTotal) {
         int years = monthsTotal / 12;
         int months = monthsTotal % 12;
         return years + " year(s) and " + months + " month(s)";
     }
 
+    //SQL part to insert data
     public static void insertData(Connection conn, FinData finData) throws SQLException { // String familyName, float dreamSum, float income, float billsTotal, float percent, int Result1, int Result2, int Result3)
         //delete old data about person
         String sql = "DELETE FROM project where familyName = ? ";
@@ -174,7 +174,7 @@ public class finalMain {
     private static void reportMonthsToDream(int result) {
         int monthsToDream = result; //(int) (0.5 + Math.ceil(finData.dreamSum / finData.moneyLeft));
 
-// depending on the amount of months, the output will be following:
+        // depending on the amount of months, the output will be following:
         if (monthsToDream < 12 && monthsToDream >= 0) {
             System.out.println("Your dream will come true in " + monthsToDream + " months");
         } else if (monthsToDream > 12 && monthsToDream % 12 != 0) {
@@ -182,7 +182,7 @@ public class finalMain {
         } else if (monthsToDream % 12 == 0){
             System.out.println("Your dream will come true in " + monthsToDream / 12 + " year(s)");
         } else {
-            System.out.println("test strada");
+            System.out.println();
         }
     }
 
@@ -196,15 +196,14 @@ public class finalMain {
         ResultSet resultSet = statement.executeQuery(sql);
 
         if (resultSet.next()) {
-            //System.out.println(resultSet.getString("familyName"));
 
             finData.familyName = resultSet.getString("familyName");
             finData.dreamSum = resultSet.getFloat("dreamSum");
             finData.income = resultSet.getFloat("income");
             finData.billsTotal = resultSet.getFloat("billsTotal");
             finData.percent = resultSet.getFloat("percent");
-            finData.resultMax = resultSet.getInt("Result1");
-            finData.resultOpt = resultSet.getInt("Result2");
+            finData.resultOpt = resultSet.getInt("Result1");
+            finData.resultMax = resultSet.getInt("Result2");
             finData.resultMin = resultSet.getInt("Result3");
 
             String output = "Your dreamSum is: %.2f \n\t Time for the Dream (month(s)): \n\t Result1: %d \n\t result2: %d " +
