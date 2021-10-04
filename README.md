@@ -1,4 +1,4 @@
-# DreamCalculator
+# DreamCalculator - Educational Project!
 DreamCalculator calculates the period of time needed to reach a certain amount of money. 
 Idea: We created an application where a user enters the amount of money he wants to save up. 
 Depending on this, as well as on his income and expenses the app will calculate the period (in the best, optimal and the worst cases) in which the sum could be reached. 
