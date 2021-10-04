@@ -101,7 +101,6 @@ public class finalMain {
             if (moneyLeft <= 0) {
                 System.out.println("In the optimal option: Your expenses exceed your income. Your dream is unreachable. ");
                 float resultOpt = 0;
-                ;
             }
             finData.resultOpt = (int) Math.ceil(finData.dreamSum / moneyLeft);
 
